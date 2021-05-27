@@ -29,10 +29,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.repository.query.Param;
 import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 import org.springframework.stereotype.Component;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import reactor.core.publisher.Mono;
 
 @SpringBootApplication
@@ -72,10 +70,24 @@ class CustomerController{
 		this.customerRegistrar = customerRegistrar;
 	}
 
-	@RequestMapping( path="/register", method = RequestMethod.POST)
-	Mono<Customer> register(@RequestBody Customer customer){
+//	@RequestMapping( path="/register", method = RequestMethod.POST)
+//	ResponseEntity register(@RequestBody Customer customer) {
+//		return customerRegistrar.register(customer);
+//	}
+
+	@GetMapping("/register")
+	public void createStudent2() {
+		System.out.println("testing");
+	}
+
+	@PostMapping("/register")
+	public Customer createStudent(@RequestBody Customer customer) {
 		return customerRegistrar.register(customer);
 	}
+
+//	Mono<Customer> register(@RequestBody Customer customer){
+//		return customerRegistrar.register(customer);
+//	}
 }
 
 
@@ -106,14 +118,14 @@ class CustomerRegistrar {
 	}
 
 	// ideally repository will return a Mono object
-	public Mono<Customer> register(Customer customer){
+	public Customer register(Customer customer){
 		if(customerRespository.findByName(customer.getName()).isPresent())
 			System.out.println("Duplicate Customer. No Action required");
 		else {
 			customerRespository.save(customer);
 			sender.send(customer.getEmail());
 		}
-		return Mono.just(customer);
+		return customer;
 	}
 }
 
@@ -142,6 +154,7 @@ class Sender {
 }
 
 //repository does not support Reactive. Ideally this should use reactive repository
+// 에노테이션은 RESTful 서비스를 통해 리파지토리로의 접근을 가능하게 해준다
 @RepositoryRestResource
 @Lazy
 interface CustomerRespository extends JpaRepository <Customer,Long>{
