@@ -42,6 +42,8 @@ public class AmqpApplication {
 		SpringApplication.run(AmqpApplication.class, args);
 	}
 
+
+	// customers?size=2&page=1&sort=name
 	@Bean
 	CommandLineRunner init(CustomerRespository customerRepository) {
 		return (evt) ->  {
