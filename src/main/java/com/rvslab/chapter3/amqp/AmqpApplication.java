@@ -91,9 +91,10 @@ class CustomerController{
 }
 
 
+
 @Component
 @Lazy
-class CustomerRegistrar {
+class CustomerRegistrar{
 
 	CustomerRespository customerRespository;
 	Sender sender;
